@@ -526,28 +526,38 @@ function wireSkillsFilter(mount) {
 
   catChips.forEach((btn) => {
     btn.addEventListener('click', () => {
-      const wasActive = btn.classList.contains('is-active');
-      clearFilter();
-      if (wasActive) return;
+      // Toggle this category on/off
+      const isNowActive = !btn.classList.contains('is-active');
+      btn.classList.toggle('is-active', isNowActive);
+      btn.setAttribute('aria-pressed', String(isNowActive));
 
-      btn.classList.add('is-active');
-      btn.setAttribute('aria-pressed', 'true');
-      const cat = btn.dataset.category;
-      const tokens = categoryTokens.get(cat) || new Set();
+      // Gather all currently active categories
+      const activeCats = catChips
+        .filter((b) => b.classList.contains('is-active'))
+        .map((b) => b.dataset.category);
 
+      if (!activeCats.length) {
+        clearFilter();
+        return;
+      }
+
+      // Union of tokens across all active categories
+      const allTokens = new Set();
+      activeCats.forEach((cat) => {
+        (categoryTokens.get(cat) || new Set()).forEach((t) => allTokens.add(t));
+      });
+
+      // Highlight chips matching any active category
       mount.querySelectorAll('[data-skill]').forEach((chip) => {
-        const inSameCategory = chip.dataset.category === cat;
-        const matches = inSameCategory || chipMatchesTokens(chip.textContent.trim(), tokens);
+        const inActiveCategory = activeCats.includes(chip.dataset.category);
+        const matches = inActiveCategory || chipMatchesTokens(chip.textContent.trim(), allTokens);
         chip.classList.toggle('is-highlighted', matches);
         chip.classList.toggle('is-dimmed', !matches);
       });
 
-      // Show only the selected category's skill group
-      const activeGroup = skillGroups.find((g) => g.dataset.category === cat);
-      if (activeGroup) {
-        activeGroup.classList.add('is-shown');
-        skillsWrap?.classList.add('has-active-group');
-      }
+      // Show skill groups for all active categories
+      skillGroups.forEach((g) => g.classList.toggle('is-shown', activeCats.includes(g.dataset.category)));
+      skillsWrap?.classList.add('has-active-group');
 
       // Auto-expand jobs that have at least one highlighted stack chip
       mount.querySelectorAll('.job').forEach((job) => {

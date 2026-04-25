@@ -59,7 +59,7 @@ Principal Engineer with **12+ years** across backend (Java, Quarkus, Spring), fr
 - Designed the **API Gateway integration** for iHotelier and ACRS APIs, enabling unified access patterns across the hospitality suite.
 - Stood up production **observability** (Splunk, Datadog) and drove cross-product API performance analysis initiatives.
 
-**Stack:** OpenAPI · Java · Quarkus · Docker · Jenkins · Splunk · Datadog · SAFe
+**Stack:** OpenAPI · API Governance · Java · Quarkus · Docker · Jenkins · Splunk · Datadog · Ollama ·SAFe
 
 ---
 
@@ -75,7 +75,7 @@ Principal Engineer with **12+ years** across backend (Java, Quarkus, Spring), fr
 - Integrated **CouchBase** for system sync, deployed the **Azure API Portal Manager**, and contributed to broader microservice architecture evolution.
 - Mentored junior developers and supported Agile practices across the organization.
 
-**Stack:** OpenAPI · Java · Quarkus · OpenShift · CouchBase · Docker · Azure (APIM, CDN, Functions) · GitHub · SAFe
+**Stack:** OpenAPI · API Governance · Java · Quarkus · Microservices · OpenShift · CouchBase · Docker · Azure (APIM, CDN, Functions) · GitHub · SAFe
 
 ---
 
