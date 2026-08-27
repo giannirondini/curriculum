@@ -65,6 +65,7 @@ async function bootstrap() {
     mount.removeAttribute('aria-busy');
 
     buildNav(sections);
+    initNavPriority();
     wireCollapse(mount);
     wireSkillsFilter(mount);
     initActiveSectionTracker();
@@ -489,6 +490,75 @@ function buildNav(sections) {
     li.appendChild(a);
     navUl.appendChild(li);
   });
+}
+
+// Priority+ nav: measures the link row and moves trailing links into a
+// "More ▾" dropdown until the row fits, re-running on resize (and once the
+// webfonts land, since they change link widths).
+function initNavPriority() {
+  const row = document.getElementById('navLinks');
+  if (!row) return;
+
+  const moreLi = document.createElement('li');
+  moreLi.className = 'topnav__more';
+  moreLi.hidden = true;
+
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'topnav__more-btn';
+  btn.setAttribute('aria-haspopup', 'true');
+  btn.setAttribute('aria-expanded', 'false');
+  btn.setAttribute('aria-controls', 'navMoreMenu');
+  btn.innerHTML = 'More <span class="topnav__more-caret" aria-hidden="true">▾</span>';
+
+  const menu = document.createElement('ul');
+  menu.className = 'topnav__more-menu';
+  menu.id = 'navMoreMenu';
+  menu.setAttribute('role', 'list');
+
+  moreLi.append(btn, menu);
+  row.appendChild(moreLi);
+
+  function setOpen(open) {
+    moreLi.classList.toggle('is-open', open);
+    btn.setAttribute('aria-expanded', String(open));
+  }
+
+  btn.addEventListener('click', () => {
+    setOpen(!moreLi.classList.contains('is-open'));
+  });
+
+  // Close after picking a section, on outside click, and on Escape.
+  menu.addEventListener('click', (e) => {
+    if (e.target.closest('a')) setOpen(false);
+  });
+  document.addEventListener('click', (e) => {
+    if (!moreLi.contains(e.target)) setOpen(false);
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && moreLi.classList.contains('is-open')) {
+      setOpen(false);
+      btn.focus();
+    }
+  });
+
+  function layout() {
+    // Restore every link to the row, then demote trailing ones until it fits.
+    while (menu.firstChild) row.insertBefore(menu.firstChild, moreLi);
+    moreLi.hidden = true;
+    setOpen(false);
+    if (row.scrollWidth <= row.clientWidth + 1) return;
+
+    moreLi.hidden = false;
+    const items = [...row.children].filter((li) => li !== moreLi);
+    for (let i = items.length - 1; i >= 0 && row.scrollWidth > row.clientWidth + 1; i--) {
+      menu.insertBefore(items[i], menu.firstChild);
+    }
+  }
+
+  window.addEventListener('resize', layout);
+  document.fonts?.ready?.then(layout);
+  layout();
 }
 
 function wireCollapse(mount) {
