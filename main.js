@@ -111,7 +111,13 @@ function splitHeader(frag) {
 
   const contacts = subtitle?.nextElementSibling;
   if (heroContacts && contacts && contacts.tagName === 'P') {
-    heroContacts.innerHTML = contacts.innerHTML;
+    // Split "a · b · c" into pill spans; fall back to the raw line if there's
+    // nothing to split.
+    const parts = contacts.innerHTML.split(/\s*·\s*/).map((s) => s.trim()).filter(Boolean);
+    heroContacts.innerHTML =
+      parts.length > 1
+        ? parts.map((p) => `<span class="hero__contact">${p}</span>`).join('')
+        : contacts.innerHTML;
     heroContacts.querySelectorAll('a').forEach((a) => {
       a.target = '_blank';
       a.rel = 'noopener noreferrer';
