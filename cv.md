@@ -84,7 +84,7 @@ Principal Engineer with **12+ years** across backend (Java, Quarkus, Spring), fr
 
 Continuous assignment at Amadeus across four successive Cytric initiatives:
 
-- **NDC API integration for Cytric** *(2018–2019)* — Led technical strategy and delivery of the New Distribution Capability integration: transformation, routing, and error-handling components; built **Dockerized WebLogic QA infrastructure** with Jenkins; documented Oracle DB duplication procedures for test environments. Served as **Scrum Master** driving Agile discipline across the team.
+- **NDC API integration for Cytric** *(2018–2021)* — Led technical strategy and delivery of the New Distribution Capability integration: transformation, routing, and error-handling components; built **Dockerized WebLogic QA infrastructure** with Jenkins; documented Oracle DB duplication procedures for test environments. Served as **Scrum Master** driving Agile discipline across the team.
 - **Cytric Expense (Angular app)** *(2017–2018)* — Developed a new Angular application that simplified expense-claim submission for corporate travelers; integrated authentication, validation, and reporting flows over OpenAPI contracts.
 - **Cytric UI modernization & core development** *(2017)* — Delivered a full UX-led UI redesign; contributed platform features, code reviews, and mentorship on the Cytric core team.
 - **CPS (Cytric Profile Synch) migration** *(2016–2017)* — Built user-provisioning tooling for the AeTM → Cytric corporate-user migration, ensuring continuity of service during the cutover.
