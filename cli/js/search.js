@@ -143,10 +143,10 @@ export function buildDocs(model) {
     add({ id: `prj-${p.slug}`, label: `Project · ${p.name}`, ref: `/projects ${p.slug}`, text: `${p.name} — ${p.tech.join(' · ')} — ${p.text}` }),
   );
   model.projectsNotes.forEach((n, i) => add({ id: `prj-note-${i}`, label: 'Projects', ref: '/projects', text: n.text }));
-  model.education.forEach((e, i) => add({ id: `edu-${i}`, label: 'Education', ref: '/education', text: e.text }));
-  model.certifications.forEach((c, i) => add({ id: `cert-${i}`, label: 'Certifications', ref: '/certifications', text: c.text }));
-  model.languages.forEach((l, i) => add({ id: `lang-${i}`, label: 'Languages', ref: '/languages', text: `${l.label}: ${l.level}` }));
-  model.publications.forEach((p, i) => add({ id: `pub-${i}`, label: 'Publications', ref: '/publications', text: p.text }));
+  model.education.forEach((e, i) => add({ id: `edu-${i}`, label: 'Education', ref: '/education', ctx: 'education degree university', text: e.text }));
+  model.certifications.forEach((c, i) => add({ id: `cert-${i}`, label: 'Certifications', ref: '/certifications', ctx: 'certification certified', text: c.text }));
+  model.languages.forEach((l, i) => add({ id: `lang-${i}`, label: 'Languages', ref: '/languages', ctx: 'spoken language', text: `${l.label}: ${l.level}` }));
+  model.publications.forEach((p, i) => add({ id: `pub-${i}`, label: 'Publications', ref: '/publications', ctx: 'publication research paper', text: p.text }));
 
   model.sections
     .filter((s) => s.kind === 'generic')

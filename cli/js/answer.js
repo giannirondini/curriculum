@@ -16,21 +16,21 @@ const R = {
   greet: /^(hi|hello|hey|hiya|howdy|ciao|hola|salut|bonjour|buongiorno|yo|sup|good (morning|afternoon|evening))( there| gianni| everyone| all)?$/,
   thanks: /^(ok |okay )?(thanks|thank you|thx|ty|grazie|merci|cheers|great|cool|nice|awesome|perfect)( (a lot|so much|very much|again))?$/,
   injection: /\b(ignore|disregard|forget) (all |any |your |the |previous |prior |above |earlier )*(instructions|prompts?|rules)\b|\bsystem prompt\b|\bjailbreak\b|\bdeveloper mode\b|\bdan mode\b|\bpretend (you are|to be)\b/,
-  meta: /\b(are|r) (you|u) (an? )?(ai|bot|robot|llm|gpt|chatgpt|claude|copilot|human|real|sentient|alive|conscious|person|machine)\b|\b(which|what) (model|llm)\b|\bwho are you\b|\bwhat are you\b|\bwho am i (talking|speaking) to\b/,
-  howBuilt: /\bhow (does|do|did) (this|it|you) (work|built|made)\b|\bhow (was|is) (this|it) (built|made|done)\b|\bsource code\b|\bbuilt with\b|\bunder the hood\b|\bhow are you (built|made)\b|\bwhat powers\b/,
+  meta: /\b(are|r) (you|u) (an? )?(ai|bot|robot|llm|gpt|chatgpt|claude|copilot|human|real|sentient|alive|conscious|person|machine)\b|\b(which|what) (model|llm|ai) (are you|is this|is that|do you use|are you using|powers (this|you)|is behind (this|you))\b|\bwho are you\b|\bwhat are you\b|\bwho am i (talking|speaking) to\b/,
+  howBuilt: /\bhow (does|do|did) (this|it|you) (work|get built|get made)\b|\bhow (was|is) (this|it|this site|the site|this page) (built|made|done)\b|\b(this|it|this site|the site|this page) (is |was )?built with\b|\bwhat (is|was) (this|it|this site|the site|this page) built with\b|\bsource code\b|\bunder the hood\b|\bhow are you (built|made)\b|\bwhat powers (this|you|it)\b/,
   life: /\bmeaning of life\b|\banswer to (life|everything)\b/,
   joke: /\b(joke|jokes|make me laugh|something funny)\b/,
   contact: /\b(contact|e ?mail|reach (him|gianni|you|out)|get in touch|phone|call (him|gianni)|linkedin|twitter|socials?)\b/,
   pdf: /\b(pdf|download|printable|print|resume file|cv file)\b/,
   availability: /\b(available|availability|open to (work|new|offers?|opportunit\w*|roles?)|looking for (a )?(new )?(job|role|position|opportunit\w*)|notice period|start date|when can (he|gianni|you) start|job hunting)\b/,
-  salary: /\b(salary|salaries|compensation|pay|paid|money|rates|day rate|salary expectations?|earn|earns)\b/,
-  location: /\b(live|lives|living|based|located|location|relocat\w*|remote|hybrid|onsite|on site|visa|work permit|citizenship|citizen|nationality|timezone|time zone|country|city)\b|\bwhere is (he|gianni) from\b/,
+  salary: /\b(salary|salaries|compensation|pay|paid|money|day rate|daily rate|hourly rate|earn|earns)\b/,
+  location: /\bwhere (does|do|is) (he|gianni|you) (live|living|based|located|from)\b|\b(based (in|out of)|lives? in|living in|located in|location|relocat\w*|remote(ly)?(?! teams?\b)|hybrid (work|working|role|position|model|setup)|on ?site|visa|work permit|citizenship|citizen|nationality|time ?zone)\b/,
   spoken: /\b(speak|speaks|spoken|fluent|fluency|native language|mother tongue)\b/,
   languageWord: /\blanguages?\b/,
   programming: /\b(programming|coding|code|tech|technical|software|computer)\b/,
-  education: /\b(degree|degrees|study|studied|studies|university|universities|college|school|education|educated|master|masters|bachelor|bachelors|msc|bsc|phd|politecnico|graduat\w*|academic|diploma)\b/,
-  certs: /\b(certif\w*|certificates?|accreditations?|psm|credentials?)\b/,
-  publications: /\b(publications?|published|papers?|research|articles?)\b/,
+  education: /\b(degree|degrees|studied|studies|university|universities|college|school|education|educated|masters? (degree|of science|s degree)|master s degree|bachelors?|msc|bsc|phd|politecnico|graduat\w*|academic|diploma)\b|\bwhat did (he|gianni|you) study\b|\bwhere did (he|gianni|you) study\b/,
+  certs: /\b(certif\w*|certificates?|accreditations?|psm)\b/,
+  publications: /\b(publications?|published|papers?|articles?|research (papers?|publications?|work))\b/,
   mcp: /\bmcp\b|\bmodel context protocol\b/,
   projects: /\b(projects?|open source|side projects?|repos?|repositories|portfolio|built|hobby|hobbies|personal work)\b/,
   current: /\b(currently|current|right now|nowadays|these days|today|at the moment|presently)\b|\bnow\b|\bwhere (does|do) (he|gianni|you) work\b|\bwhat (does|do) (he|gianni|you) do\b|\bworking on\b|\bwho (does|do) (he|gianni|you) work for\b|\bjob title\b|\bwhat is (his|gianni s|your) (job|role|position)\b/,
@@ -124,7 +124,7 @@ export function createAnswerer({ model, facts, views, index, repoUrl }) {
     const rest = q.replace(new RegExp(trigger.source, 'g'), ' ').replace(/\s+/g, ' ').trim();
     if (!rest || !terms(rest).length) return null;
     const { hits } = retrieve(rest);
-    return hits.length ? retrievalAnswer(rest, hits) : null;
+    return hits.length ? retrievalAnswer(q, hits) : null; // display the full phrase
   }
 
   // ---- canned, CV-aware answers -------------------------------------------------
@@ -280,7 +280,7 @@ export function createAnswerer({ model, facts, views, index, repoUrl }) {
     if (R.current.test(q) && !ents.length) return say('current_role', `experience[1]`, views.now());
     if (R.timeline.test(q) && !ents.length) return narrowed(q, R.timeline) || say('timeline', 'experience', views.experience());
     if (R.pitch.test(q)) return say('pitch', 'summary + current role', views.pitch());
-    if (R.about.test(q) && !ents.length) return say('about', 'summary', views.about());
+    if (R.about.test(q) && !ents.length) return narrowed(q, R.about) || say('about', 'summary', views.about());
     if (R.impact.test(q)) return say('impact', 'ranked bullets', impact());
 
     if (ents.length) {
