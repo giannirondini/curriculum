@@ -8,7 +8,7 @@
 
 ## Professional Summary
 
-Principal Engineer with **12+ years** across backend (Java, Quarkus, Spring), frontend (Angular, TypeScript), and distributed API architecture. Currently driving **GenAI adoption and developer-experience** inside a 1,000+ person travel-tech organization — prompt & context engineering, GitHub Copilot and Claude Code customization, custom agents, and MCP server development. SAFe-certified Scrum Master with a track record in API governance across multi-team organizations.
+Principal Engineer with **12+ years** across backend (Java, Quarkus, Spring), frontend (Angular, TypeScript), and distributed API architecture. Currently driving **GenAI integration and the internal developer-experience practice** inside a 1,000+ person travel-tech organization — prompt and context engineering, advanced GitHub Copilot and Claude Code customization, custom agents, and MCP server development. Ships product outside the day job: four open-source projects spanning a native macOS Copilot client, MCP tooling, and local-AI pipelines. SAFe-certified Scrum Master who has driven API governance across multi-team organizations. Looking to bring architectural leverage and operational AI practice to a product-driven company.
 
 - 🧠 **AI & GenAI** — MCP server development, local LLM deployment, Copilot & Claude Code adoption across 6 teams (+40%)
 - 🏗️ **Architecture** — API-first design, API governance, microservices, Azure platform engineering
@@ -21,7 +21,7 @@ Principal Engineer with **12+ years** across backend (Java, Quarkus, Spring), fr
 
 | Category | Skills |
 |---|---|
-| **AI / GenAI Engineering** | Prompt engineering · Context engineering · MCP (Model Context Protocol) · Custom agents · GitHub Copilot customization · Claude Code · Ollama · LM Studio · Local LLM deployment · Developer-experience automation |
+| **AI / GenAI Engineering** | Prompt engineering · Context engineering · MCP (Model Context Protocol) server development · Custom agents · GitHub Copilot advanced customization (repo-level workflows & instructions) · Claude Code · Ollama · LM Studio · Local LLM deployment · Developer-experience automation |
 | **Languages & Runtimes** | Java · TypeScript · JavaScript · Python · SQL · Bash · Swift · Node.js · Groovy · C / C++ · AppleScript |
 | **Frameworks** | Angular · RxJS · NgRx · Quarkus · Spring · Hibernate |
 | **API & Architecture** | OpenAPI · API-first design · API Governance · Microservices · Event-driven architecture · Azure API Management · API Gateway · Stoplight |
@@ -39,9 +39,9 @@ Principal Engineer with **12+ years** across backend (Java, Quarkus, Spring), fr
 *Pricing Cockpit — airline offer-price optimization platform.*
 
 - Architected and drove **organization-wide GenAI adoption**: established prompt and context engineering standards, rolled out advanced **GitHub Copilot customization** (repository-level instructions, custom workflows, custom agents), and piloted **Claude Code** for engineering teams — fostered the adoption of AI tools across six teams, increasing the adoption by 40/50%.
-- Developed internal **MCP (Model Context Protocol) servers** to connect enterprise tooling with AI assistants, extending agent capabilities beyond out-of-the-box functionality and enabling context-aware automation across developer workflows.
+- Developed internal **MCP servers** to connect enterprise tooling with AI assistants, extending agent capabilities beyond out-of-the-box functionality and enabling context-aware automation across workflows.
 - Operationalized **local LLM tooling** (Ollama, LM Studio) for privacy-sensitive use cases and evaluation workflows, giving engineers production-grade AI options without data-exit concerns.
-- Owned end-to-end delivery of the **Pricing Cockpit** — Angular / NgRx / RxJS front-end through Python / OpenAPI back-end on Azure Databricks — including performance tuning that reduced query latency and API response times to enable near-real-time pricing recalculation for airline users.
+- Owned end-to-end delivery of the **Pricing Cockpit** — Angular / NgRx / RxJS front-end through Python / OpenAPI back-end on Azure Databricks — including performance tuning that reduced query latency and API response times.
 - Established **engineering standards and knowledge-sharing practices** across the organization; authored extensive Confluence documentation — architectural decisions, how-to guides, and tooling playbooks — adopted as reference material across teams.
 - Active contributor to internal **API and Agile improvement groups** shaping cross-product engineering practice, and a regular voice in the internal **macOS support community** for fellow engineers.
 
@@ -75,7 +75,12 @@ Principal Engineer with **12+ years** across backend (Java, Quarkus, Spring), fr
 - Integrated **CouchBase** for system sync, deployed the **Azure API Portal Manager**, and contributed to broader microservice architecture evolution.
 - Mentored junior developers and supported Agile practices across the organization.
 
-**Stack:** OpenAPI · API Governance · Java · Quarkus · Microservices · OpenShift · CouchBase · Docker · Azure (APIM, CDN, Functions) · GitHub · SAFe
+**Stack:** OpenAPI · API Governance · Java · Quarkus · OpenShift · CouchBase · Docker · Azure (APIM, CDN, Functions) · GitHub · Ollama · SAFe
+
+---
+
+### Senior Software Engineer — NDC API integration for Cytric
+**Amadeus** · *Jun 2019 – Aug 2021*
 
 ---
 
@@ -84,7 +89,7 @@ Principal Engineer with **12+ years** across backend (Java, Quarkus, Spring), fr
 
 Continuous assignment at Amadeus across four successive Cytric initiatives:
 
-- **NDC API integration for Cytric** *(2018–2021)* — Led technical strategy and delivery of the New Distribution Capability integration: transformation, routing, and error-handling components; built **Dockerized WebLogic QA infrastructure** with Jenkins; documented Oracle DB duplication procedures for test environments. Served as **Scrum Master** driving Agile discipline across the team.
+- **NDC API integration for Cytric** *(2018–2019)* — Led technical strategy and delivery of the New Distribution Capability integration: transformation, routing, and error-handling components; built **Dockerized WebLogic QA infrastructure** with Jenkins; documented Oracle DB duplication procedures for test environments. Served as **Scrum Master** driving Agile discipline across the team.
 - **Cytric Expense (Angular app)** *(2017–2018)* — Developed a new Angular application that simplified expense-claim submission for corporate travelers; integrated authentication, validation, and reporting flows over OpenAPI contracts.
 - **Cytric UI modernization & core development** *(2017)* — Delivered a full UX-led UI redesign; contributed platform features, code reviews, and mentorship on the Cytric core team.
 - **CPS (Cytric Profile Synch) migration** *(2016–2017)* — Built user-provisioning tooling for the AeTM → Cytric corporate-user migration, ensuring continuity of service during the cutover.
@@ -110,7 +115,7 @@ Personal projects built to explore AI tooling, developer experience, and product
 - **[⚓ anchor](https://github.com/giannirondini/anchor)** — *Swift · macOS · NodeJS · GitHub Copilot SDK*
   Native macOS chat client for GitHub Copilot, delivering a ChatGPT-style experience powered directly by the Copilot SDK.
 
-- **[🔌 mockoon-mcp](https://github.com/giannirondini/mockoon-mcp)** — *TypeScript · MCP · Mockoon · OpenAPI*
+- **[🔌 mockoon-mcp](https://github.com/giannirondini/mockoon-mcp)** — *TypeScript · Model Context Protocol · Mockoon · OpenAPI*
   MCP server for Mockoon configurations — enables AI assistants to read, modify, and manage routes, responses, environments, and data buckets programmatically. Extends agentic AI into API mocking workflows.
 
 - **[🎙️ local-whisper](https://github.com/giannirondini/local-whisper)** — *Python · Whisper · Ollama*

@@ -4,11 +4,17 @@
 // tokenizeSkill("Azure (Databricks, Functions)")
 //   -> ["Azure (Databricks, Functions)", "Azure", "Azure Databricks",
 //       "Databricks", "Azure Functions", "Functions"]
+// A parenthesis may also sit mid-name:
+// tokenizeSkill("MCP (Model Context Protocol) server development")
+//   -> [<full>, "MCP server development", "MCP", "MCP Model Context Protocol",
+//       "Model Context Protocol"]
 export function tokenizeSkill(text) {
   const out = [text];
-  const m = text.match(/^(.+?)\s*\(([^)]+)\)\s*$/);
+  const m = text.match(/^(.+?)\s*\(([^)]+)\)\s*(.*)$/);
   if (m) {
     const base = m[1].trim();
+    const tail = m[3].trim();
+    if (tail) out.push(`${base} ${tail}`);
     out.push(base);
     m[2].split(',').forEach((item) => {
       const itm = item.trim();
