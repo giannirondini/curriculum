@@ -8,6 +8,8 @@
 //     -> mount into #cv
 //     -> wire interactions         (nav, collapse, skills filter, theme, observers)
 
+import { tokenizeSkill, chipMatchesTokens } from './shared/skill-match.js';
+
 const CV_PATH = './cv.md';
 
 const NAV_LABELS = {
@@ -644,34 +646,6 @@ function wireSkillsFilter(mount) {
       });
     });
   });
-}
-
-function tokenizeSkill(text) {
-  const out = [text];
-  const m = text.match(/^(.+?)\s*\(([^)]+)\)\s*$/);
-  if (m) {
-    const base = m[1].trim();
-    out.push(base);
-    m[2].split(',').forEach((item) => {
-      const itm = item.trim();
-      if (itm) {
-        out.push(`${base} ${itm}`);
-        out.push(itm);
-      }
-    });
-  }
-  return out;
-}
-
-function chipMatchesTokens(chipText, tokens) {
-  const c = chipText.toLowerCase().trim();
-  if (tokens.has(c)) return true;
-  for (const tok of tokens) {
-    if (tok === c) return true;
-    if (tok.length > c.length && tok.startsWith(c) && /[\s/(\-]/.test(tok[c.length])) return true;
-    if (c.length > tok.length && c.startsWith(tok) && /[\s/(\-]/.test(c[tok.length])) return true;
-  }
-  return false;
 }
 
 function initActiveSectionTracker() {

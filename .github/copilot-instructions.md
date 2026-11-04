@@ -2,7 +2,7 @@
 
 ## Project
 
-Single-page static CV site. Vanilla HTML/CSS/JS only — no framework, no Node, no build pipeline. Deployed to GitHub Pages via `.github/workflows/deploy.yml`.
+Static CV site with two front-ends over the same `cv.md`: the classic page (`/`) and an AI-assistant-style terminal (`/cli/`, see `cli/` and the "CLI version" section of `CLAUDE.md`). Vanilla HTML/CSS/JS only — no framework, no Node, no build pipeline. Deployed to GitHub Pages via `.github/workflows/deploy.yml`.
 
 **Do not introduce npm, bundlers, frameworks, or server-side code.**
 
@@ -40,6 +40,8 @@ At runtime, `main.js` assembles the page in three stages:
 | `main.js` | Enrichment pipeline + all interactions |
 | `style.css` | Design tokens, layout, dark theme, print |
 | `index.html` | Semantic shell only — no CV content |
+| `shared/skill-match.js` | Skill matching shared by classic + CLI |
+| `cli/` | Terminal front-end (ES modules, no build) |
 | `vendor/marked.min.js` | Vendored parser — **do not modify** |
 
 ## `cv.md` Conventions
@@ -54,7 +56,7 @@ Enrichment passes depend on strict formatting. Deviating silently falls back to 
 
 ## Skills Filter
 
-`tokenizeSkill()` + `chipMatchesTokens()` handle fuzzy, word-boundary token matching across Core Competencies chips, job Stack chips, and project tech chips. If a chip won't highlight under the right category, fix the skill wording in the table — don't add special cases in `main.js`.
+`tokenizeSkill()` + `chipMatchesTokens()` (in `shared/skill-match.js`, used by both front-ends) handle fuzzy, word-boundary token matching across Core Competencies chips, job Stack chips, and project tech chips. If a chip won't highlight under the right category, fix the skill wording in the table — don't add special cases in `main.js`.
 
 ## Animations
 

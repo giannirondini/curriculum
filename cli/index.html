@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="Gianni Rondini's CV as an AI-style command line: slash commands and plain-English questions, answered offline from the CV." />
+  <meta name="color-scheme" content="light dark" />
+  <title>Gianni Rondini — CLI</title>
+  <script>
+    // Apply the saved theme (shared with the classic site) before first paint.
+    try {
+      document.documentElement.dataset.theme =
+        localStorage.getItem('cvTheme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    } catch (e) {}
+  </script>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%232C6E7F'/%3E%3Cstop offset='100%25' stop-color='%231B4F8A'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='6' fill='url(%23g)'/%3E%3Ctext x='50%25' y='56%25' dominant-baseline='middle' text-anchor='middle' font-family='ui-monospace, monospace' font-size='15' font-weight='700' fill='%23F7F6F2'%3E%3E_%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400..700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="cli.css" />
+  <script src="../vendor/marked.min.js" defer></script>
+  <script src="js/app.js" type="module"></script>
+</head>
+<body>
+  <a class="skip-link" href="#prompt">Skip to the prompt</a>
+
+  <div class="app" id="app" data-repo="https://github.com/giannirondini/curriculum">
+    <div class="win">
+      <header class="win__bar">
+        <div class="win__lights" aria-hidden="true"><span></span><span></span><span></span></div>
+        <h1 class="win__title"><span class="sr-only">Gianni Rondini — CV terminal. </span><span aria-hidden="true">guest@gianni: ~</span></h1>
+        <div class="win__actions">
+          <a class="win__btn" href="../" title="Classic site" aria-label="Open the classic, non-terminal site">
+            <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><rect x="3.5" y="4.5" width="17" height="15" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/><line x1="3.5" y1="9" x2="20.5" y2="9" stroke="currentColor" stroke-width="1.6"/><line x1="7" y1="13" x2="14" y2="13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="7" y1="16" x2="11" y2="16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            <span class="win__label">GUI</span>
+          </a>
+          <a class="win__btn" href="../pdf/Gianni-Rondini-CV.pdf" download title="Download PDF" aria-label="Download the CV as PDF">
+            <span aria-hidden="true">↓</span>
+            <span class="win__label">PDF</span>
+          </a>
+          <button class="win__btn win__btn--icon" id="themeToggle" type="button" title="Toggle theme" aria-label="Toggle theme" aria-pressed="true">
+            <svg class="icon icon--sun" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.6"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><line x1="12" y1="2.5" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="21.5"/><line x1="2.5" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="21.5" y2="12"/><line x1="5.2" y1="5.2" x2="6.9" y2="6.9"/><line x1="17.1" y1="17.1" x2="18.8" y2="18.8"/><line x1="5.2" y1="18.8" x2="6.9" y2="17.1"/><line x1="17.1" y1="6.9" x2="18.8" y2="5.2"/></g></svg>
+            <svg class="icon icon--moon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" d="M20.5 14.5A8 8 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11z"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <main class="term" id="term" aria-busy="true">
+        <div class="term__log" id="log" role="log" aria-live="off" aria-label="Conversation"></div>
+        <noscript><p class="o-p">This terminal needs JavaScript. The CV is also available as a <a href="../pdf/Gianni-Rondini-CV.pdf">PDF</a>.</p></noscript>
+      </main>
+
+      <footer class="dock">
+        <div class="suggest" id="suggest" role="group" aria-label="Suggested commands and questions"></div>
+        <form class="prompt" id="promptForm" autocomplete="off" role="search" aria-label="Ask about the CV">
+          <ul class="pal" id="palette" role="listbox" aria-label="Commands" hidden></ul>
+          <span class="prompt__glyph" aria-hidden="true">›</span>
+          <label for="prompt" class="sr-only">Ask a question about the CV, or type a slash command</label>
+          <input id="prompt" class="prompt__input" type="text" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="palette" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="send" placeholder="Type / for commands, or just ask a question" />
+        </form>
+        <div class="status" aria-hidden="true">
+          <span class="status__left"><span class="status__dot"></span>offline · no LLM · answers from cv.md · 0 tokens</span>
+          <span class="status__right">/ commands · ↑↓ history · tab complete</span>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <div class="sr-only" id="announcer" aria-live="polite" aria-atomic="true"></div>
+</body>
+</html>
