@@ -130,6 +130,7 @@ async function main() {
       'blk--error',
     );
     document.getElementById('term')?.removeAttribute('aria-busy');
+    ui.fail('The CV could not be loaded');
     console.error(e);
     return;
   }
@@ -357,8 +358,11 @@ async function main() {
   ui.rotatePlaceholder(answerer.examples());
   ui.announce(`${model.name} — CV terminal ready. Ask a question or type slash help.`);
 
+  // Deep link first, then anything typed while loading (queued behind it).
   const initial = readHash();
-  if (initial) await execute(initial);
+  const initialRun = initial ? execute(initial) : null;
+  ui.setReady();
+  await initialRun;
   ui.focus();
 
   window.addEventListener('hashchange', () => {

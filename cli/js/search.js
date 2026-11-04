@@ -97,14 +97,21 @@ const SYNONYMS = {
   privacy: 'local offline',
 };
 
+// Keyed by stem, because expandQuery() only ever sees stemmed terms
+// ("monitoring" -> "monitor", "database" -> "databas"). Keys that share a
+// stem merge their expansions.
+const SYNONYM_INDEX = new Map();
+Object.entries(SYNONYMS).forEach(([key, words]) => {
+  const k = stem(key);
+  SYNONYM_INDEX.set(k, [...new Set([...(SYNONYM_INDEX.get(k) || []), ...words.split(' ').map(stem)])]);
+});
+
 export function expandQuery(text) {
   const base = terms(text);
   const weights = new Map();
   base.forEach((t) => weights.set(t, 1));
   base.forEach((t) => {
-    const syn = SYNONYMS[t];
-    if (!syn) return;
-    syn.split(' ').map(stem).forEach((s) => {
+    (SYNONYM_INDEX.get(t) || []).forEach((s) => {
       if (!weights.has(s)) weights.set(s, 0.45);
     });
   });

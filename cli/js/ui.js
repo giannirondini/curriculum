@@ -256,9 +256,30 @@ export function createUI({ motion, coarse, onRun, complete }) {
     requestAnimationFrame(() => input.setSelectionRange(input.value.length, input.value.length));
   }
 
+  // ---- readiness ---------------------------------------------------------------
+  // Nothing runs until app.js has loaded the CV and calls setReady(). An Enter
+  // pressed before that keeps the typed text and is replayed once ready.
+  let ready = false;
+  let pendingSubmit = false;
+
+  function setReady() {
+    ready = true;
+    if (pendingSubmit && input.value.trim()) submit(input.value);
+    pendingSubmit = false;
+  }
+
+  function fail(message) {
+    ready = false;
+    pendingSubmit = false;
+    input.disabled = true;
+    input.placeholder = message;
+    closePalette();
+  }
+
   // ---- slash palette (combobox) -----------------------------------------------
   let items = [];
   let active = 0;
+  let navigated = false; // selection moved with the arrow keys
 
   function openPalette() {
     const v = input.value;
@@ -268,7 +289,7 @@ export function createUI({ motion, coarse, onRun, complete }) {
     palette.innerHTML = items
       .map(
         (it, i) =>
-          `<li role="option" id="pal-${i}" class="pal__item${i === active ? ' is-active' : ''}" aria-selected="${i === active}" data-i="${i}"><span class="pal__cmd">${esc(it.label)}</span>${it.hint ? `<span class="pal__hint">${esc(it.hint)}</span>` : ''}<span class="pal__desc">${esc(it.desc || '')}</span></li>`,
+          `<li role="option" id="pal-${i}" class="pal__item${i === active ? ' is-active' : ''}" aria-selected="${i === active}" data-i="${i}"><span class="pal__cmd">${esc(it.label)}</span><span class="pal__hint">${esc(it.hint || '')}</span><span class="pal__desc">${esc(it.desc || '')}</span></li>`,
       )
       .join('');
     palette.hidden = false;
@@ -286,6 +307,7 @@ export function createUI({ motion, coarse, onRun, complete }) {
   }
 
   function move(d) {
+    navigated = true;
     active = (active + d + items.length) % items.length;
     palette.querySelectorAll('.pal__item').forEach((li, i) => {
       li.classList.toggle('is-active', i === active);
@@ -308,6 +330,10 @@ export function createUI({ motion, coarse, onRun, complete }) {
   function submit(value) {
     const v = value.trim();
     if (!v) return;
+    if (!ready) {
+      pendingSubmit = true; // keep the text; replayed by setReady()
+      return;
+    }
     pushHistory(v);
     input.value = '';
     draft = '';
@@ -323,6 +349,7 @@ export function createUI({ motion, coarse, onRun, complete }) {
 
   input.addEventListener('input', () => {
     active = 0;
+    navigated = false;
     openPalette();
   });
 
@@ -330,7 +357,11 @@ export function createUI({ motion, coarse, onRun, complete }) {
     const open = !palette.hidden && items.length;
     if (e.key === 'Enter' && open && !e.isComposing) {
       e.preventDefault();
-      submit(items[active].value);
+      // The highlighted entry wins only if it really matches what was typed,
+      // or was picked with the arrows: a description-only match must not turn
+      // "/experience amadeus" into "/experience 1".
+      const it = items[active];
+      submit(navigated || it.strong ? it.value : input.value);
     } else if (e.key === 'Tab' && open) {
       e.preventDefault();
       accept();
@@ -347,7 +378,7 @@ export function createUI({ motion, coarse, onRun, complete }) {
       else skipAll();
     } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'l') {
       e.preventDefault();
-      onRun('/clear', 'key');
+      if (ready) onRun('/clear', 'key');
     } else if (e.ctrlKey && e.key.toLowerCase() === 'c' && !window.getSelection()?.toString() && input.selectionStart === input.selectionEnd) {
       e.preventDefault();
       if (input.value) {
@@ -382,6 +413,7 @@ export function createUI({ motion, coarse, onRun, complete }) {
       return;
     }
     e.preventDefault();
+    if (!ready) return;
     onRun(btn.dataset.run, 'click');
     if (!coarse) input.focus({ preventScroll: true });
   });
@@ -392,12 +424,21 @@ export function createUI({ motion, coarse, onRun, complete }) {
     if (!window.getSelection()?.toString()) input.focus({ preventScroll: true });
   });
 
+  // The skip link focuses the prompt without touching the hash: the hash is
+  // the deep-link command, so "#prompt" would be run as a question.
+  document.querySelector('.skip-link')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    input.focus();
+  });
+
   // Typing anywhere goes to the prompt; Esc anywhere skips animations.
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') skipAll();
     if (document.activeElement === input) return;
     if (e.ctrlKey || e.metaKey || e.altKey || e.key.length !== 1) return;
     if (e.target.closest?.('input, textarea, select, [contenteditable]')) return;
+    // Space on a focused control keeps its native activation (buttons fire on keyup).
+    if (e.key === ' ' && e.target.closest?.('a, button, summary, [role="button"], [tabindex]')) return;
     if (skipFns.size) skipAll();
     input.focus({ preventScroll: true });
   });
@@ -431,6 +472,8 @@ export function createUI({ motion, coarse, onRun, complete }) {
     skipAll,
     follow,
     rotatePlaceholder,
+    setReady,
+    fail,
     focus: () => !coarse && input.focus({ preventScroll: true }),
     queue: {
       add: () => {

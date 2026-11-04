@@ -983,9 +983,42 @@ kbd {
    Print: the transcript, no chrome
    ===================================================================== */
 @media print {
-  body { overflow: visible; background: #fff; color: #000; }
+  /* Light palette on paper whatever the screen theme (as the classic
+     stylesheet does): dark-theme tokens would print near-white text. */
+  :root,
+  [data-theme="dark"] {
+    --page: #fff;
+    --bg: #fff;
+    --bg-bar: #fff;
+    --bg-elev: #fff;
+    --bg-soft: #F1EFE9;
+    --text: #14161B;
+    --text-soft: #3F444E;
+    --text-muted: #6A707B;
+    --accent: #0E7C86;
+    --accent-2: #1B4F8A;
+    --accent-tint: transparent;
+    --ok: #1E7F46;
+    --warn: #9A6200;
+    --err: #B93A12;
+    --mark: rgba(14, 124, 134, 0.16);
+    --border: #E6E2D9;
+    --border-strong: #CFCABD;
+    --shadow: none;
+    --glow: none;
+    color-scheme: light;
+  }
+
+  body { overflow: visible; background: #fff; color: var(--text); }
   .app { height: auto; padding: 0; }
   .win { height: auto; border: 0; box-shadow: none; }
   .win__bar, .dock, .boot, .spin, .trace { display: none; }
   .term { overflow: visible; }
+
+  /* Gradient-clipped text relies on printed backgrounds: use a solid colour. */
+  .nf__art {
+    background: none;
+    -webkit-text-fill-color: currentColor;
+    color: var(--accent);
+  }
 }

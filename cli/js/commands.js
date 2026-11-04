@@ -309,23 +309,30 @@ export function createCommands(ctx) {
     const m = value.match(/^\/(\S*)(\s+)?(.*)$/s);
     if (!m) return [];
     const [, name, space, argPart] = m;
+    // Ranked: exact/prefix matches first (`strong`: Enter may take them),
+    // then weaker ones (shown, but Enter keeps what was typed).
+    const ranked = (entries, rank) =>
+      entries
+        .map((e) => ({ e, r: rank(e) }))
+        .filter((x) => x.r >= 0)
+        .sort((x, y) => x.r - y.r)
+        .map(({ e, r }) => ({ ...e, strong: r < 2 }));
     if (!space) {
       const q = name.toLowerCase();
-      const visible = list.filter((c) => !c.hidden);
-      const starts = visible.filter((c) => c.name.startsWith(q) || c.aliases.some((a) => a.startsWith(q) && q.length > 1));
-      const contains = q.length > 1 ? visible.filter((c) => !starts.includes(c) && c.name.includes(q)) : [];
-      return [...starts, ...contains].map((c) => ({
-        value: `/${c.name}`,
-        label: `/${c.name}`,
-        hint: c.args,
-        desc: c.desc,
-        takesArgs: !!c.complete,
-      }));
+      const visible = list
+        .filter((c) => !c.hidden)
+        .map((c) => ({ c, value: `/${c.name}`, label: `/${c.name}`, hint: c.args, desc: c.desc, takesArgs: !!c.complete }));
+      return ranked(visible, ({ c }) =>
+        c.name.startsWith(q) ? 0 : q.length > 1 && c.aliases.some((a) => a.startsWith(q)) ? 1 : q.length > 1 && c.name.includes(q) ? 2 : -1,
+      ).map(({ c, ...rest }) => rest);
     }
     const cmd = find(name);
     if (!cmd?.complete) return [];
-    const a = argPart.toLowerCase();
-    return cmd.complete().filter((o) => o.label.toLowerCase().startsWith(a) || (a.length > 1 && o.desc.toLowerCase().includes(a)));
+    const a = argPart.toLowerCase().trim();
+    return ranked(cmd.complete(), (o) => {
+      const l = o.label.toLowerCase();
+      return l === a ? 0 : l.startsWith(a) ? 1 : a.length > 1 && o.desc.toLowerCase().includes(a) ? 2 : -1;
+    });
   }
 
   function help() {
