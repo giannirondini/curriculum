@@ -51,7 +51,7 @@ Enrichment depends on the CV following specific conventions. **If a section brea
 
 Clicking a category chip highlights matching `[data-skill]` elements **across the page** — Core Competencies, job Stack chips, project tech chips. Matching is **token-based and fuzzy**, not exact-slug equality:
 
-- Each skill in a category is tokenized via `tokenizeSkill()` — for `"Azure (Databricks, Functions, CDN, APIM)"` this yields `["Azure (Databricks, ...)", "Azure", "Azure Databricks", "Databricks", "Azure Functions", ...]`.
+- Each skill in a category is tokenized via `tokenizeSkill()` — for `"Azure (Databricks, Functions, CDN, APIM)"` this yields `["Azure (Databricks, ...)", "Azure", "Azure Databricks", "Databricks", "Azure Functions", ...]`. The parenthesis may also sit mid-name: `"MCP (Model Context Protocol) server development"` also yields `"MCP server development"`, `"MCP"` and `"Model Context Protocol"`.
 - `chipMatchesTokens()` uses word-boundary `startsWith` matching so `"Java"` doesn't false-positive on `"JavaScript"`, but `"Azure Databricks"` correctly matches the parenthesized form.
 
 If a stack/project chip refuses to highlight under the right category, the fix is usually to adjust how the skill is written in the Core Competencies table, not to add special cases in `main.js`.
