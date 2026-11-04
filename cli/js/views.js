@@ -307,10 +307,20 @@ export function createViews(model, facts) {
     };
   }
 
+  /**
+   * What was going on in year `y`: roles active that year, plus dated
+   * initiatives ("NDC API integration (2018–2021)") running that year. An
+   * initiative's own dates can outlast the role it is listed under (a project
+   * that continued after a contract ended), so initiatives are collected from
+   * every role, and the ones outside an active role say where they're listed.
+   */
   function inYear(y) {
-    const active = J.filter((j) => j.range && j.range.start.y <= y && (j.range.end ? j.range.end.y : new Date().getFullYear()) >= y);
+    const covers = (r) => !!r && r.start.y <= y && (r.end ? r.end.y : new Date().getFullYear()) >= y;
+    const active = J.filter((j) => covers(j.range));
+    const running = J.flatMap((j) => j.bullets.filter((b) => covers(b.range)).map((b) => ({ j, b })));
+    const beyond = running.filter(({ j }) => !active.includes(j));
     const start = careerStart(model);
-    if (!active.length) {
+    if (!active.length && !beyond.length) {
       const edu = model.education.filter((e) => e.range && e.range.start.y <= y && e.range.end.y >= y);
       const before = start && y < start.y;
       const future = y > new Date().getFullYear();
@@ -327,16 +337,20 @@ export function createViews(model, facts) {
         suggest: ['/experience', '/education'],
       };
     }
+    const listedUnder = ({ j, b }) =>
+      html`<div class="o-hit"><div class="o-hit__src">${ref(jobCmd(j), `#${j.n}`)} <span class="o-muted">listed under ${j.title} · ${j.company} · ${j.dates}</span></div><p class="o-hit__text">${raw(b.html)}</p></div>`;
     return {
-      html: html`<p class="o-p">In <strong>${y}</strong>:</p>
-        ${jobRows(active)}
+      html: html`<p class="o-p">${active.length ? html`In <strong>${y}</strong>:` : html`In <strong>${y}</strong>, Gianni was working on:`}</p>
+        ${active.length ? jobRows(active) : ''}
         ${active.map((j) => {
-          const items = j.bullets.filter((b) => b.range && b.range.start.y <= y && b.range.end.y >= y);
+          const items = running.filter((x) => x.j === j).map((x) => x.b);
           return items.length
             ? html`<p class="o-p o-muted">Initiatives that year at ${j.company}:</p><ul class="o-list">${items.map((b) => html`<li>${raw(b.html)}</li>`)}</ul>`
             : '';
-        })}`,
-      suggest: [...active.map(jobCmd), '/experience'],
+        })}
+        ${beyond.length && active.length ? html`<p class="o-p o-muted">Also running that year, by its own dates:</p>` : ''}
+        ${beyond.length ? html`<div class="o-hits">${beyond.map(listedUnder)}</div>` : ''}`,
+      suggest: [...new Set([...active, ...beyond.map((x) => x.j)].map(jobCmd)), '/experience'],
     };
   }
 
