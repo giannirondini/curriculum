@@ -222,6 +222,25 @@ hr {
   justify-content: center;
 }
 
+.btn--cli {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+
+/* Narrow phones: actions go icon-only so the "More" menu never overlaps them. */
+@media (max-width: 420px) {
+  .btn--github span { display: none; }
+  .btn--github { padding: 7px 9px; }
+}
+
+@media (max-width: 380px) {
+  .btn--pdf span:last-child { display: none; }
+  .btn--pdf { padding: 7px 11px; }
+  .topnav__actions { gap: var(--space-1); }
+}
+
 .btn--icon .icon--moon { display: none; }
 [data-theme="dark"] .btn--icon .icon--sun { display: none; }
 [data-theme="dark"] .btn--icon .icon--moon { display: block; }
